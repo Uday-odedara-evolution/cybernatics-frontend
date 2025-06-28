@@ -1,0 +1,24 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Get today's date in YYYY-MM-DD format
+TODAY=$(date +%F)
+
+# Get today's commits by the current user
+COMMITS=$(git log --since="$TODAY 00:00" --until="$TODAY 23:59" --pretty=format:"- %s (%h)")
+
+# Exit if no commits found
+if [ -z "$COMMITS" ]; then
+  echo "No commits found for today."
+  exit 0
+fi
+
+# Save to a doc file (e.g., push-log.md)
+echo "## Commits on $TODAY" > push-log.md
+echo "$COMMITS" >> push-log.md
+
+# Optionally commit the file (if desired)
+# git add push-log.md
+# git commit -m "chore: add push log for $TODAY"
+
+echo "Today's commits have been saved to push-log.md"
